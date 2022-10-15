@@ -85,18 +85,6 @@ abstract class RebaseCli {
         currentBranch,
         logger: logger,
       );
-      logger.info("Current branch: $currentBranch ($currentBranchHash)");
-      await GitCli.printCommits(
-        branch: currentBranch,
-        logger: logger,
-        hash: currentBranchHash,
-      );
-      logger.info("Base branch: $baseBranch ($baseBranchHash)");
-      await GitCli.printCommits(
-        branch: baseBranch,
-        logger: logger,
-        hash: baseBranchHash,
-      );
       final changedFiles = await GitCli.getChangedFiles(logger: logger);
       if (changedFiles.isNotEmpty) {
         throw CommitChangesException(changedFiles);
