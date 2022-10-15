@@ -5,9 +5,9 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'dart:io';
+import "dart:io";
 
-import 'package:selectcode/src/command_runner.dart';
+import "package:selectcode/src/command_runner.dart";
 
 Future<void> main(List<String> args) async {
   await _flushThenExit(await SelectcodeCommandRunner().run(args));

@@ -1,6 +1,6 @@
-import 'package:selectcode/src/commands/create/templates/flutter/flutter_template.dart';
+import "package:selectcode/src/commands/create/templates/flutter/flutter_template.dart";
 
-import 'templates/template.dart';
+import "package:selectcode/src/commands/create/templates/template.dart";
 
 abstract class Application {
   const Application({
@@ -8,10 +8,10 @@ abstract class Application {
     required this.template,
   });
 
+  factory Application.flutter() => FlutterApp();
+
   final String name;
   final Template template;
-
-  factory Application.flutter() => FlutterApp();
   // factory Application.react() => ReactApp();
 }
 

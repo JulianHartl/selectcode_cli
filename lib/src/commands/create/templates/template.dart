@@ -1,5 +1,5 @@
-import 'package:mason/mason.dart';
-import 'package:universal_io/io.dart';
+import "package:mason/mason.dart";
+import "package:universal_io/io.dart";
 
 /// {@template template}
 /// Dart class that represents a VeryGoodCLI supported template.

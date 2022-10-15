@@ -32,7 +32,7 @@ abstract class RebaseCli {
   // Run `curl -L https://git.io/rebase-via-merge -o ./git-rebase-via-merge.sh`.
   static Future<void> _fetchRebaseScript({required Logger logger}) async {
     await _runWithProgress(
-      (progress) => _Cli.run(
+          (progress) => _Cli.run(
         "curl",
         ["-L", "https://git.io/rebase-via-merge", "-o", "./$_rebaseScriptName"],
         logger: logger,
@@ -44,7 +44,7 @@ abstract class RebaseCli {
 
   static Future<void> _deleteRebaseScript({required Logger logger}) async {
     await _runWithProgress(
-      (progress) => _Cli.run(
+          (progress) => _Cli.run(
         "rm",
         [
           "./$_rebaseScriptName",
@@ -61,7 +61,7 @@ abstract class RebaseCli {
     required String branch,
   }) async {
     await _runWithProgress(
-      (progress) => _Cli.run(
+          (progress) => _Cli.run(
         "/bin/bash",
         ["./$_rebaseScriptName", branch],
         logger: logger,
@@ -72,28 +72,18 @@ abstract class RebaseCli {
   }
 
   static Future<void> runRebaseScript({
-    required String branch,
+    required String baseBranch,
     required Logger logger,
   }) async {
     logger.info("This script will perform rebase via merge.");
+    String? currentBranch;
+    var needsAbort = false;
     try {
-      final currentBranch = await GitCli.getCurrentBranch(logger: logger);
-      final baseBranchHash = await GitCli.getHash(branch, logger: logger);
+      currentBranch = await GitCli.getCurrentBranch(logger: logger);
+      final baseBranchHash = await GitCli.getHash(baseBranch, logger: logger);
       final currentBranchHash = await GitCli.getHash(
         currentBranch,
         logger: logger,
-      );
-      logger.info("Current branch: $currentBranch ($currentBranchHash)");
-      await GitCli.printCommits(
-        branch: currentBranch,
-        logger: logger,
-        hash: currentBranchHash,
-      );
-      logger.info("Base branch: $branch ($baseBranchHash)");
-      await GitCli.printCommits(
-        branch: branch,
-        logger: logger,
-        hash: baseBranchHash,
       );
       final changedFiles = await GitCli.getChangedFiles(logger: logger);
       if (changedFiles.isNotEmpty) {
@@ -103,7 +93,7 @@ abstract class RebaseCli {
         throw CurrentBranchEqualToBaseException();
       }
       final notReachableCommits = await GitCli.getNotReachableCommits(
-        baseBranch: branch,
+        baseBranch: baseBranch,
         branch: currentBranch,
         logger: logger,
       );
@@ -112,7 +102,7 @@ abstract class RebaseCli {
       }
       final uniqueCommits = await GitCli.getNotReachableCommits(
         baseBranch: currentBranch,
-        branch: branch,
+        branch: baseBranch,
         logger: logger,
       );
       if (uniqueCommits.isEmpty) {
@@ -123,25 +113,33 @@ abstract class RebaseCli {
         logger: logger,
         quiet: true,
       );
+      needsAbort = true;
       await GitCli.merge(
-        branch: branch,
+        branch: baseBranch,
         message: "Hidden orphaned commit to save merge result.",
         logger: logger,
       );
-      if (await GitCli.areMergeConflictsPresent(logger: logger)) {
-        await _resolveConflicts(
+      if (await GitCli.hasMergeConflicts(logger: logger)) {
+        final success = await _resolveConflicts(
           logger: logger,
           name: "merge",
           currentBranch: currentBranch,
           abort: () async {
             await GitCli.abortMerge(logger: logger);
           },
-          onContinue: () => GitCli.commit(
-            message: "Hidden orphaned commit to save merge result.",
-            logger: logger,
-          ),
+          onContinue: () async {
+            await GitCli.commit(
+              message: "Hidden orphaned commit to save merge result.",
+              logger: logger,
+            );
+          },
         );
+        if (!success) {
+          logger.info("Exited rebase via merge");
+          return;
+        }
       }
+
       final hiddenResultHash = await GitCli.getHash("HEAD", logger: logger);
       logger.info("Merge succeeded at hidden commit: $hiddenResultHash");
       await GitCli.checkout(
@@ -150,11 +148,11 @@ abstract class RebaseCli {
         quiet: true,
       );
       await GitCli.rebase(
-        branch: branch,
+        branch: baseBranch,
         logger: logger,
       );
       if (await GitCli.areRebaseConflictsPresent(logger: logger)) {
-        await _resolveConflicts(
+        final success = await _resolveConflicts(
           logger: logger,
           name: "rebase",
           abort: () async {
@@ -165,16 +163,20 @@ abstract class RebaseCli {
           ),
           currentBranch: currentBranch,
         );
+        if (!success) {
+          logger.info("Exited rebase via merge");
+          return;
+        }
       }
       final currentTree = await GitCli.getTree(parent: "HEAD", logger: logger);
       final resultTree =
-          await GitCli.getTree(parent: hiddenResultHash, logger: logger);
+      await GitCli.getTree(parent: hiddenResultHash, logger: logger);
       if (currentTree != resultTree) {
         logger.info(
           "Restoring project state from the hidden merge with single additional commit.",
         );
         final additionalCommitMessage =
-            "Rebase via merge. '$currentBranch' rebased on '$branch'.";
+            "Rebase via merge. '$currentBranch' rebased on '$baseBranch'.";
         final additionalCommitHash = await GitCli.getCommitTree(
           branch: hiddenResultHash,
           logger: logger,
@@ -182,7 +184,7 @@ abstract class RebaseCli {
           message: additionalCommitMessage,
         );
         await GitCli.merge(
-          branch: branch,
+          branch: additionalCommitHash,
           fastForward: true,
           logger: logger,
         );
@@ -191,9 +193,38 @@ abstract class RebaseCli {
           "You don't need an additional commit. Project state is correct.",
         );
       }
-      logger.success("Done");
-    } on GitException catch (e) {
-      logger.info("Can't rebase. ${e.message}");
+      logger.success("Finished rebase.");
+      const doItAutomatically = "Do it automatically";
+      const doItManually = "I'll do it manually";
+
+      final choice = logger.chooseOne(
+        "The rebase changed the historical start point of the current branch. To prevent errors you should do a git push --force.",
+        choices: [
+          doItAutomatically,
+          doItManually,
+        ],
+        defaultValue: doItAutomatically,
+      );
+      if (choice == doItAutomatically) {
+        await GitCli.push(force: true, logger: logger);
+        logger.success("Updated origin/$currentBranch");
+      }
+    } catch (e) {
+      if (currentBranch != null && needsAbort) {
+        try {
+          await GitCli.abortMerge(logger: logger);
+        } finally {
+          await GitCli.checkout(
+            branch: currentBranch,
+            logger: logger,
+          );
+        }
+      }
+      if (e is GitException) {
+        logger.info("Can't rebase. ${e.message}");
+      } else {
+        rethrow;
+      }
     }
 
     // try {
@@ -207,7 +238,7 @@ abstract class RebaseCli {
     // }
   }
 
-  static Future<void> _resolveConflicts({
+  static Future<bool> _resolveConflicts({
     required Logger logger,
     required String name,
     required Future<void> Function() onContinue,
@@ -218,7 +249,7 @@ abstract class RebaseCli {
       logger: logger,
     );
     final filesWithConflictMarkers =
-        await GitCli.getFilesWithConflictMarkers(logger: logger);
+    await GitCli.getFilesWithConflictMarkers(logger: logger);
     logger
       ..info("You have at least one $name conflict.")
       ..info(
@@ -244,15 +275,17 @@ abstract class RebaseCli {
       if (choice == wantToContinue) {
         unstagedFiles = await GitCli.getUnstagedFiles(logger: logger);
         if (unstagedFiles.isNotEmpty) {
-          logger.info("There are still unstaged files.");
+          logger.info(
+              "There are still unstaged files:\n${unstagedFiles.join("\n")}",);
         } else {
           await onContinue();
         }
       } else {
         await abort();
         await GitCli.checkout(branch: currentBranch, logger: logger);
-        break;
+        return false;
       }
     }
+    return true;
   }
 }

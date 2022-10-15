@@ -1,7 +1,7 @@
-import 'package:args/command_runner.dart';
-import 'package:mason/mason.dart';
+import "package:args/command_runner.dart";
+import "package:mason/mason.dart";
 
-import '../../cli/cli.dart';
+import "package:selectcode/src/cli/cli.dart";
 
 class RebaseCommand extends Command<int> {
   RebaseCommand({required Logger logger}) : _logger = logger {
@@ -26,7 +26,7 @@ class RebaseCommand extends Command<int> {
       usageException("Missing branch.");
     }
     await RebaseCli.runRebaseScript(
-      branch: branch,
+      baseBranch: branch,
       logger: _logger,
     );
     return ExitCode.success.code;

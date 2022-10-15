@@ -1,60 +1,19 @@
 part of "cli.dart";
 
-abstract class GitException implements Exception {
-  String get message;
-}
 
-class NoCurrentBranchException implements GitException {
-  @override
-  String get message => "There is no current branch: you are in detached head.";
-}
-
-class CouldNotGetHashException implements GitException {
-  const CouldNotGetHashException(this.branch);
-
-  final String branch;
-
-  @override
-  String get message => "Could not get hash for branch $branch";
-}
-
-class CouldNotGetChangedFilesException implements GitException {
-  const CouldNotGetChangedFilesException();
-
-  @override
-  String get message => "Could not get changed files.";
-}
-
-class CouldNotGetTreeException implements GitException {
-  const CouldNotGetTreeException(this.parent);
-
-  final String parent;
-
-  @override
-  String get message => "Could not get tree for parent $parent";
-}
-
-class CouldNotGetCommitTreeException implements GitException {
-  const CouldNotGetCommitTreeException(this.branch, this.parent);
-
-  final String parent;
-  final String branch;
-
-  @override
-  String get message =>
-      "Could not get commit tree for branch $branch with parent $parent";
-}
 
 abstract class GitCli {
   static Future<ProcessResult> _runCommand(
     List<String> args, {
     required Logger logger,
+    bool throwOnError = true,
   }) async {
     final result = await _Cli.run(
       "git",
       args,
       workingDir: Directory.current.path,
       logger: logger,
+      throwError: throwOnError,
     );
     return result;
   }
@@ -66,7 +25,7 @@ abstract class GitCli {
       ["rev-parse", "--show-toplevel"],
       logger: logger,
     );
-    return result.stdout.toString();
+    return result.stdout.toString().trim();
   }
 
   static Future<void> checkout({
@@ -83,10 +42,31 @@ abstract class GitCli {
             branch,
           ],
           logger: logger,
+          throwOnError: false,
         );
       },
       logger: logger,
       message: "Getting current branch",
+    );
+  }
+
+  static Future<void> push({
+    required Logger logger,
+    bool force = false,
+  }) async {
+    return _runWithProgress(
+      (progress) async {
+        await _runCommand(
+          [
+            "push",
+            if (force) "--force",
+          ],
+          logger: logger,
+          throwOnError: false,
+        );
+      },
+      logger: logger,
+      message: "Pushing changes",
     );
   }
 
@@ -175,24 +155,40 @@ abstract class GitCli {
   }) async {
     return _runWithProgress(
       (progress) async {
-        await _runCommand(
-          ["rebase", "-X", "theirs", "||", "true"],
-          logger: logger,
-        );
+        try {
+          await _runCommand(
+            [
+              "rebase",
+              branch,
+              "-X",
+              "theirs",
+            ],
+            logger: logger,
+          );
+        } on ProcessException catch (e) {
+          if (!e.message.toLowerCase().contains("success")) {
+            rethrow;
+          }
+        }
       },
       logger: logger,
       message: "Rebasing any conflicts automatically.",
     );
   }
 
-  static Future<bool> areMergeConflictsPresent({
+  static Future<bool> hasMergeConflicts({
     required Logger logger,
   }) async {
     return _runWithProgress(
       (progress) async {
         final wdPath = await getWorkingDirectory(logger: logger);
-        final dir = Directory(p.join(wdPath, "/.git/MERGE_HEAD"));
-        return dir.exists();
+        final mergeHeadPath = "$wdPath/.git/MERGE_HEAD";
+        final mergeHead = File.fromUri(Uri.parse(mergeHeadPath));
+        final exists = await mergeHead.exists();
+        progress.update(
+            "Checking for merge conflicts (${exists ? "At least one" : "None found"})",);
+
+        return exists;
       },
       logger: logger,
       message: "Checking for merge conflicts",
@@ -214,10 +210,9 @@ abstract class GitCli {
           if (message != null) ...[
             "-m",
             message,
-            "||",
-            "true",
           ],
         ],
+        throwOnError: false,
         logger: logger,
       ),
       logger: logger,
@@ -254,17 +249,17 @@ abstract class GitCli {
             "cat-file",
             "-p",
             parent,
-            "|",
-            "grep",
-            "tree",
           ],
           logger: logger,
         );
-        final tree = result.stdout?.toString();
+        final tree = result.stdout?.toString().split("\n").firstWhere(
+              (element) => element.contains("tree"),
+              orElse: () => "",
+            );
         if (tree == null || tree.isEmpty) {
           throw CouldNotGetTreeException(parent);
         }
-        return tree;
+        return tree.trim();
       },
       logger: logger,
       message: "Getting tree for parent $parent",
@@ -360,21 +355,22 @@ abstract class GitCli {
         final result = await _runCommand(
           [
             "status",
-            "porcelain",
+            "--porcelain",
             "--ignore-submodules=dirty",
-            "|",
-            'grep -v "^. "',
-            "|",
-            "cut",
-            "-c4-"
           ],
           logger: logger,
         );
         final out = result.stdout?.toString();
-        if (out == null || out.isEmpty) {
-          return [];
+        if (out == null) {
+          throw const CouldNotGetUnstagedFilesException();
         }
-        return out.split("\n");
+        if (out.isEmpty) return [];
+        return out
+            .split("\n")
+            .where((element) => element.isNotEmpty)
+            .where((element) => element[1] != " ")
+            .map((e) => e.split(" ").last)
+            .toList();
       },
       logger: logger,
       message: "Getting unstaged files",
@@ -387,11 +383,14 @@ abstract class GitCli {
     return _runWithProgress(
       (progress) async {
         final result = await _runCommand(
-          ["diff", "--check", "|", "cat"],
+          ["diff", "--check"],
           logger: logger,
         );
         final out = result.stdout?.toString();
-        if (out == null || out.isEmpty) {
+        if (out == null) {
+          throw const CouldNotGetFilesWithConflictMarkers();
+        }
+        if (out.isEmpty) {
           return [];
         }
         return out.split("\n");
@@ -434,6 +433,7 @@ abstract class GitCli {
             "--abort",
           ],
           logger: logger,
+          throwOnError: false,
         );
         progress.complete("Aborted.");
       },
