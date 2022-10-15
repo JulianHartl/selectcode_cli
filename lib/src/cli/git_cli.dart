@@ -192,15 +192,21 @@ abstract class GitCli {
   }) async {
     return _runWithProgress(
       (progress) async {
-        await _runCommand(
-          [
-            "rebase",
-            branch,
-            "-X",
-            "theirs",
-          ],
-          logger: logger,
-        );
+        try {
+          await _runCommand(
+            [
+              "rebase",
+              branch,
+              "-X",
+              "theirs",
+            ],
+            logger: logger,
+          );
+        } on ProcessException catch (e) {
+          if (!e.message.toLowerCase().contains("success")) {
+            rethrow;
+          }
+        }
       },
       logger: logger,
       message: "Rebasing any conflicts automatically.",
@@ -395,7 +401,12 @@ abstract class GitCli {
         if (out == null || out.isEmpty) {
           throw const CouldNotGetUnstagedFilesException();
         }
-        return out.split("\n").where((element) => element.isNotEmpty).where((element) => element[1] != " ").map((e) => e.split(" ").last).toList();
+        return out
+            .split("\n")
+            .where((element) => element.isNotEmpty)
+            .where((element) => element[1] != " ")
+            .map((e) => e.split(" ").last)
+            .toList();
       },
       logger: logger,
       message: "Getting unstaged files",
