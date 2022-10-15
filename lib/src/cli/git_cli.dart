@@ -398,9 +398,10 @@ abstract class GitCli {
           logger: logger,
         );
         final out = result.stdout?.toString();
-        if (out == null || out.isEmpty) {
+        if (out == null) {
           throw const CouldNotGetUnstagedFilesException();
         }
+        if (out.isEmpty) return [];
         return out
             .split("\n")
             .where((element) => element.isNotEmpty)
