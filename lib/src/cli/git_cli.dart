@@ -200,15 +200,17 @@ abstract class GitCli {
     );
   }
 
-  static Future<bool> areMergeConflictsPresent({
+  static Future<bool> hasMergeConflicts({
     required Logger logger,
   }) async {
     return _runWithProgress(
       (progress) async {
         final wdPath = await getWorkingDirectory(logger: logger);
-        final dir = Directory("$wdPath/.git/MERGE_HEAD");
-        logger.info(dir.path);
-        return dir.existsSync();
+        final mergeHeadDir = "$wdPath/.git/MERGE_HEAD";
+        final dir = Directory(mergeHeadDir);
+        logger.info(mergeHeadDir);
+        final exists = await dir.exists();
+        progress.update("Checking for merge conflicts ($exists)");
       },
       logger: logger,
       message: "Checking for merge conflicts",
