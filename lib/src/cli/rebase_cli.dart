@@ -76,8 +76,9 @@ abstract class RebaseCli {
     required Logger logger,
   }) async {
     logger.info("This script will perform rebase via merge.");
+    String? currentBranch;
     try {
-      final currentBranch = await GitCli.getCurrentBranch(logger: logger);
+      currentBranch = await GitCli.getCurrentBranch(logger: logger);
       final baseBranchHash = await GitCli.getHash(branch, logger: logger);
       final currentBranchHash = await GitCli.getHash(
         currentBranch,
@@ -194,6 +195,12 @@ abstract class RebaseCli {
       logger.success("Done");
     } on GitException catch (e) {
       logger.info("Can't rebase. ${e.message}");
+      if (currentBranch != null) {
+        await GitCli.checkout(
+          branch: currentBranch,
+          logger: logger,
+        );
+      }
     }
 
     // try {
