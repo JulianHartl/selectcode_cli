@@ -210,7 +210,7 @@ abstract class GitCli {
         final dir = Directory(mergeHeadDir);
         logger.info(mergeHeadDir);
         final exists = await dir.exists();
-        progress.update("Checking for merge conflicts ($exists)");
+        progress.update("Checking for merge conflicts (${exists ? "At least one" : "None found"})");
 
         return exists;
       },

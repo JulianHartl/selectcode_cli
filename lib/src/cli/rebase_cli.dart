@@ -119,16 +119,7 @@ abstract class RebaseCli {
       if (uniqueCommits.isEmpty) {
         throw NoUniqueCommitsException();
       }
-      await GitCli.checkout(
-        branch: currentBranchHash,
-        logger: logger,
-        quiet: true,
-      );
-      await GitCli.merge(
-        branch: branch,
-        message: "Hidden orphaned commit to save merge result.",
-        logger: logger,
-      );
+
       if (await GitCli.hasMergeConflicts(logger: logger)) {
         await _resolveConflicts(
           logger: logger,
@@ -143,6 +134,16 @@ abstract class RebaseCli {
           ),
         );
       }
+      await GitCli.checkout(
+        branch: currentBranchHash,
+        logger: logger,
+        quiet: true,
+      );
+      await GitCli.merge(
+        branch: branch,
+        message: "Hidden orphaned commit to save merge result.",
+        logger: logger,
+      );
       final hiddenResultHash = await GitCli.getHash("HEAD", logger: logger);
       logger.info("Merge succeeded at hidden commit: $hiddenResultHash");
       await GitCli.checkout(
@@ -183,7 +184,7 @@ abstract class RebaseCli {
           message: additionalCommitMessage,
         );
         await GitCli.merge(
-          branch: branch,
+          branch: additionalCommitHash,
           fastForward: true,
           logger: logger,
         );
