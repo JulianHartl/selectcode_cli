@@ -407,7 +407,7 @@ abstract class GitCli {
     return _runWithProgress(
       (progress) async {
         final result = await _runCommand(
-          ["diff", "--check", "|", "cat"],
+          ["diff", "--check"],
           logger: logger,
         );
         final out = result.stdout?.toString();
