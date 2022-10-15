@@ -119,6 +119,7 @@ abstract class GitCli {
             if (force) "--force",
           ],
           logger: logger,
+          throwOnError: false,
         );
       },
       logger: logger,
