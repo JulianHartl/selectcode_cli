@@ -193,18 +193,21 @@ abstract class RebaseCli {
         );
       }
       logger.success("Done");
-    } on GitException catch (e) {
-      logger.info("Can't rebase. ${e.message}");
+    } catch (e) {
       if (currentBranch != null) {
-        try{
+        try {
           await GitCli.abortMerge(logger: logger);
-        }finally{
+        } finally {
           await GitCli.checkout(
             branch: currentBranch,
             logger: logger,
           );
         }
-
+      }
+      if (e is GitException) {
+        logger.info("Can't rebase. ${e.message}");
+      } else {
+        rethrow;
       }
     }
 
