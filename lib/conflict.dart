@@ -1,4 +1,4 @@
-void conflict2() {}
+void conflict1() {
 
 void newConflict() {}
 
