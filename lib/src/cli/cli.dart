@@ -27,7 +27,7 @@ abstract class _Cli {
     required Logger logger,
   }) async {
     const runProcess = Process.run;
-    // logger.info("Running: $cmd with $args");
+    logger.info("Running: $cmd with $args");
     final result = await runProcess(
       cmd,
       args,
@@ -35,9 +35,9 @@ abstract class _Cli {
       workingDirectory: workingDir,
     );
 
-    // logger
-    //   ..info("stdout:\n${result.stdout}")
-    //   ..info("stderr:\n${result.stderr}");
+    logger
+      ..info("stdout:\n${result.stdout}")
+      ..info("stderr:\n${result.stderr}");
     if (!result.isSuccess) {
       if (throwError) {
         throw ProcessException(
