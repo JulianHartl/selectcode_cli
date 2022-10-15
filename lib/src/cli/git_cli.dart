@@ -254,13 +254,13 @@ abstract class GitCli {
             "cat-file",
             "-p",
             parent,
-            "|",
-            "grep",
-            "tree",
           ],
           logger: logger,
         );
-        final tree = result.stdout?.toString();
+        final tree = result.stdout?.toString().split("\n").firstWhere(
+              (element) => element.contains("tree"),
+              orElse: () => "",
+            );
         if (tree == null || tree.isEmpty) {
           throw CouldNotGetTreeException(parent);
         }
