@@ -202,8 +202,10 @@ abstract class GitCli {
   }) async {
     return _runWithProgress(
       (progress) async {
-        final wdPath = await getWorkingDirectory(logger: logger);
-        final dir = Directory(p.join(wdPath, ".git/MERGE_HEAD"));
+        final wdPath = await getWorkingDirectory(logger: logger);\
+        final path = p.join(wdPath, ".git/MERGE_HEAD");
+        final dir = Directory(path);
+        logger.info(path);
         return dir.exists();
       },
       logger: logger,
