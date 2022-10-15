@@ -203,6 +203,7 @@ abstract class GitCli {
   static Future<bool> hasMergeConflicts({
     required Logger logger,
   }) async {
+    return true;
     return _runWithProgress(
       (progress) async {
         final wdPath = await getWorkingDirectory(logger: logger);
