@@ -9,6 +9,12 @@ class NoCurrentBranchException implements GitException {
   String get message => "There is no current branch: you are in detached head.";
 }
 
+class CouldNotGetFilesWithConflictMarkers implements GitException {
+  const CouldNotGetFilesWithConflictMarkers();
+  @override
+  String get message => "Could not get files with conflict markers.";
+}
+
 class CouldNotGetHashException implements GitException {
   const CouldNotGetHashException(this.branch);
 
@@ -214,8 +220,6 @@ abstract class GitCli {
           if (message != null) ...[
             "-m",
             message,
-            "||",
-            "true",
           ],
         ],
         logger: logger,
@@ -264,7 +268,7 @@ abstract class GitCli {
         if (tree == null || tree.isEmpty) {
           throw CouldNotGetTreeException(parent);
         }
-        return tree;
+        return tree.trim();
       },
       logger: logger,
       message: "Getting tree for parent $parent",
@@ -391,7 +395,10 @@ abstract class GitCli {
           logger: logger,
         );
         final out = result.stdout?.toString();
-        if (out == null || out.isEmpty) {
+        if (out == null) {
+          throw const CouldNotGetFilesWithConflictMarkers();
+        }
+        if(out.isEmpty){
           return [];
         }
         return out.split("\n");
