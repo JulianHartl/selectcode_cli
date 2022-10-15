@@ -395,7 +395,7 @@ abstract class GitCli {
         if (out == null || out.isEmpty) {
           throw const CouldNotGetUnstagedFilesException();
         }
-        return out.split("\n").where((element) => element.isNotEmpty).where((element) => element[1] != " ").toList();
+        return out.split("\n").where((element) => element.isNotEmpty).where((element) => element[1] != " ").map((e) => e.split(" ").last).toList();
       },
       logger: logger,
       message: "Getting unstaged files",
