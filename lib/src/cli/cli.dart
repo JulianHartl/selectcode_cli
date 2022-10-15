@@ -36,8 +36,8 @@ abstract class _Cli {
     );
 
     logger
-      ..detail("stdout:\n${result.stdout}")
-      ..detail("stderr:\n${result.stderr}");
+      ..info("stdout:\n${result.stdout}")
+      ..info("stderr:\n${result.stderr}");
     if (!result.isSuccess || result.stderr.toString().isNotEmpty) {
       if (throwError) {
         throw ProcessException(
