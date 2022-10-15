@@ -11,6 +11,7 @@ class NoCurrentBranchException implements GitException {
 
 class CouldNotGetFilesWithConflictMarkers implements GitException {
   const CouldNotGetFilesWithConflictMarkers();
+
   @override
   String get message => "Could not get files with conflict markers.";
 }
@@ -182,7 +183,12 @@ abstract class GitCli {
     return _runWithProgress(
       (progress) async {
         await _runCommand(
-          ["rebase", "-X", "theirs"],
+          [
+            "rebase",
+            branch,
+            "-X",
+            "theirs",
+          ],
           logger: logger,
         );
       },
@@ -398,7 +404,7 @@ abstract class GitCli {
         if (out == null) {
           throw const CouldNotGetFilesWithConflictMarkers();
         }
-        if(out.isEmpty){
+        if (out.isEmpty) {
           return [];
         }
         return out.split("\n");
