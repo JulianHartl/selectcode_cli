@@ -119,7 +119,6 @@ abstract class RebaseCli {
         message: "Hidden orphaned commit to save merge result.",
         logger: logger,
       );
-      logger.prompt("test");
       if (await GitCli.hasMergeConflicts(logger: logger)) {
         final success = await _resolveConflicts(
           logger: logger,
