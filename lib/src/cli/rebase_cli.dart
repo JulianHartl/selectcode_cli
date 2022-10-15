@@ -130,7 +130,7 @@ abstract class RebaseCli {
         logger: logger,
       );
       if (await GitCli.hasMergeConflicts(logger: logger)) {
-        await _resolveConflicts(
+        final success = await _resolveConflicts(
           logger: logger,
           name: "merge",
           currentBranch: currentBranch,
@@ -142,6 +142,10 @@ abstract class RebaseCli {
             logger: logger,
           ),
         );
+        if (!success) {
+          logger.info("Exited rebase via merge");
+          return;
+        }
       }
 
       final hiddenResultHash = await GitCli.getHash("HEAD", logger: logger);
@@ -156,7 +160,7 @@ abstract class RebaseCli {
         logger: logger,
       );
       if (await GitCli.areRebaseConflictsPresent(logger: logger)) {
-        await _resolveConflicts(
+        final success = await _resolveConflicts(
           logger: logger,
           name: "rebase",
           abort: () async {
@@ -167,6 +171,10 @@ abstract class RebaseCli {
           ),
           currentBranch: currentBranch,
         );
+        if (!success) {
+          logger.info("Exited rebase via merge");
+          return;
+        }
       }
       final currentTree = await GitCli.getTree(parent: "HEAD", logger: logger);
       final resultTree =
@@ -223,7 +231,7 @@ abstract class RebaseCli {
     // }
   }
 
-  static Future<void> _resolveConflicts({
+  static Future<bool> _resolveConflicts({
     required Logger logger,
     required String name,
     required Future<void> Function() onContinue,
@@ -267,8 +275,9 @@ abstract class RebaseCli {
       } else {
         await abort();
         await GitCli.checkout(branch: currentBranch, logger: logger);
-        break;
+        return false;
       }
     }
+    return true;
   }
 }
