@@ -384,9 +384,9 @@ abstract class GitCli {
             "--ignore-submodules=dirty",
             "|",
             'grep -v "^. "',
-            "|",
-            "cut",
-            "-c4-"
+            // "|",
+            // "cut",
+            // "-c4-"
           ],
           logger: logger,
         );
