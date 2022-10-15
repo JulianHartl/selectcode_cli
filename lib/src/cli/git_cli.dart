@@ -204,7 +204,8 @@ abstract class GitCli {
       (progress) async {
         final wdPath = await getWorkingDirectory(logger: logger);
         final dir = Directory("$wdPath/.git/MERGE_HEAD");
-        return dir.exists();
+        logger.info(dir.path);
+        return dir.existsSync();
       },
       logger: logger,
       message: "Checking for merge conflicts",
