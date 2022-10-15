@@ -382,8 +382,8 @@ abstract class GitCli {
             "status",
             "porcelain",
             "--ignore-submodules=dirty",
-            "|",
-            'grep -v "^. "',
+            // "|",
+            // 'grep -v "^. "',
             // "|",
             // "cut",
             // "-c4-"
