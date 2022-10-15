@@ -75,7 +75,7 @@ abstract class GitCli {
       ["rev-parse", "--show-toplevel"],
       logger: logger,
     );
-    return result.stdout.toString();
+    return result.stdout.toString().trim();
   }
 
   static Future<void> checkout({
