@@ -77,6 +77,7 @@ abstract class RebaseCli {
   }) async {
     logger.info("This script will perform rebase via merge.");
     String? currentBranch;
+    bool needsAbort = false;
     try {
       currentBranch = await GitCli.getCurrentBranch(logger: logger);
       final baseBranchHash = await GitCli.getHash(baseBranch, logger: logger);
@@ -124,6 +125,7 @@ abstract class RebaseCli {
         logger: logger,
         quiet: true,
       );
+      needsAbort = true;
       await GitCli.merge(
         branch: baseBranch,
         message: "Hidden orphaned commit to save merge result.",
@@ -203,7 +205,7 @@ abstract class RebaseCli {
       }
       logger.success("Done");
     } catch (e) {
-      if (currentBranch != null) {
+      if (currentBranch != null && needsAbort) {
         try {
           await GitCli.abortMerge(logger: logger);
         } finally {
