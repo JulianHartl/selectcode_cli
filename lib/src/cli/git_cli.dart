@@ -211,6 +211,8 @@ abstract class GitCli {
         logger.info(mergeHeadDir);
         final exists = await dir.exists();
         progress.update("Checking for merge conflicts ($exists)");
+
+        return exists;
       },
       logger: logger,
       message: "Checking for merge conflicts",
