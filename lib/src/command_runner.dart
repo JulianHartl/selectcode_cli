@@ -48,6 +48,7 @@ class SelectcodeCommandRunner extends CommandRunner<int> {
     addCommand(SampleCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
     addCommand(CreateCommand(logger: _logger));
+    addCommand(RebaseCommand(logger: _logger));
   }
 
   final Logger _logger;
