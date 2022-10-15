@@ -256,11 +256,10 @@ abstract class RebaseCli {
         defaultValue: wantToContinue,
       );
       if (choice == wantToContinue) {
+        await onContinue();
         unstagedFiles = await GitCli.getUnstagedFiles(logger: logger);
         if (unstagedFiles.isNotEmpty) {
           logger.info("There are still unstaged files.");
-        } else {
-          await onContinue();
         }
       } else {
         await abort();
