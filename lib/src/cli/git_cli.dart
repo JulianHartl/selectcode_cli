@@ -176,7 +176,7 @@ abstract class GitCli {
     return _runWithProgress(
       (progress) async {
         await _runCommand(
-          ["rebase", "-X", "theirs", "||", "true"],
+          ["rebase", "-X", "theirs"],
           logger: logger,
         );
       },
