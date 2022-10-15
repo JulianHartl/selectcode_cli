@@ -127,10 +127,13 @@ abstract class RebaseCli {
           abort: () async {
             await GitCli.abortMerge(logger: logger);
           },
-          onContinue: () => GitCli.commit(
-            message: "Hidden orphaned commit to save merge result.",
-            logger: logger,
-          ),
+          onContinue: () async {
+            logger.prompt('want to commit?');
+            await GitCli.commit(
+              message: "Hidden orphaned commit to save merge result.",
+              logger: logger,
+            );
+          },
         );
         if (!success) {
           logger.info("Exited rebase via merge");
