@@ -236,6 +236,7 @@ abstract class GitCli {
             message,
           ],
         ],
+        throwOnError: false,
         logger: logger,
       ),
       logger: logger,
