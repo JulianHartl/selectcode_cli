@@ -52,6 +52,13 @@ class CouldNotGetCommitTreeException implements GitException {
       "Could not get commit tree for branch $branch with parent $parent";
 }
 
+class CouldNotGetUnstagedFilesException implements GitException {
+  const CouldNotGetUnstagedFilesException();
+
+  @override
+  String get message => "Could not get unstaged files.";
+}
+
 abstract class GitCli {
   static Future<ProcessResult> _runCommand(
     List<String> args, {
@@ -379,21 +386,16 @@ abstract class GitCli {
         final result = await _runCommand(
           [
             "status",
-            "porcelain",
+            "--porcelain",
             "--ignore-submodules=dirty",
-            // "|",
-            // 'grep -v "^. "',
-            // "|",
-            // "cut",
-            // "-c4-"
           ],
           logger: logger,
         );
         final out = result.stdout?.toString();
         if (out == null || out.isEmpty) {
-          return [];
+          throw const CouldNotGetUnstagedFilesException();
         }
-        return out.split("\n");
+        return out.split("\n").map((e) => e.split(" ").last).toList();
       },
       logger: logger,
       message: "Getting unstaged files",
