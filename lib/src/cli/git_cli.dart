@@ -56,12 +56,14 @@ abstract class GitCli {
   static Future<ProcessResult> _runCommand(
     List<String> args, {
     required Logger logger,
+    bool throwOnError = true,
   }) async {
     final result = await _Cli.run(
       "git",
       args,
       workingDir: Directory.current.path,
       logger: logger,
+      throwError: throwOnError,
     );
     return result;
   }
@@ -90,6 +92,7 @@ abstract class GitCli {
             branch,
           ],
           logger: logger,
+          throwOnError: false,
         );
       },
       logger: logger,
