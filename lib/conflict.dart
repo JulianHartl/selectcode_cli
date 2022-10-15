@@ -1,3 +1,7 @@
 void conflict() {
 
 }
+
+void newConflict() {
+
+}
