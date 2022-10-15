@@ -5,19 +5,19 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:mason_logger/mason_logger.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:pub_updater/pub_updater.dart';
-import 'package:selectcode/src/command_runner.dart';
-import 'package:selectcode/src/version.dart';
-import 'package:test/test.dart';
+import "package:mason_logger/mason_logger.dart";
+import "package:mocktail/mocktail.dart";
+import "package:pub_updater/pub_updater.dart";
+import "package:selectcode/src/command_runner.dart";
+import "package:selectcode/src/version.dart";
+import "package:test/test.dart";
 
 class MockLogger extends Mock implements Logger {}
 
 class MockPubUpdater extends Mock implements PubUpdater {}
 
 void main() {
-  group('sample', () {
+  group("sample", () {
     late PubUpdater pubUpdater;
     late Logger logger;
     late SelectcodeCommandRunner commandRunner;
@@ -36,29 +36,29 @@ void main() {
       );
     });
 
-    test('tells a joke', () async {
-      final exitCode = await commandRunner.run(['sample']);
+    test("tells a joke", () async {
+      final exitCode = await commandRunner.run(["sample"]);
 
       expect(exitCode, ExitCode.success.code);
 
       verify(
-        () => logger.info('Which unicorn has a cold? The Achoo-nicorn!'),
+        () => logger.info("Which unicorn has a cold? The Achoo-nicorn!"),
       ).called(1);
     });
-    test('tells a joke in cyan', () async {
-      final exitCode = await commandRunner.run(['sample', '-c']);
+    test("tells a joke in cyan", () async {
+      final exitCode = await commandRunner.run(["sample", "-c"]);
 
       expect(exitCode, ExitCode.success.code);
 
       verify(
         () => logger.info(
-          lightCyan.wrap('Which unicorn has a cold? The Achoo-nicorn!'),
+          lightCyan.wrap("Which unicorn has a cold? The Achoo-nicorn!"),
         ),
       ).called(1);
     });
 
-    test('wrong usage', () async {
-      final exitCode = await commandRunner.run(['sample', '-p']);
+    test("wrong usage", () async {
+      final exitCode = await commandRunner.run(["sample", "-p"]);
 
       expect(exitCode, ExitCode.usage.code);
 

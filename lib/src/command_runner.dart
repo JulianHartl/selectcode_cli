@@ -5,16 +5,16 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:args/args.dart';
-import 'package:args/command_runner.dart';
-import 'package:mason_logger/mason_logger.dart';
-import 'package:pub_updater/pub_updater.dart';
-import 'package:selectcode/src/commands/commands.dart';
-import 'package:selectcode/src/version.dart';
+import "package:args/args.dart";
+import "package:args/command_runner.dart";
+import "package:mason_logger/mason_logger.dart";
+import "package:pub_updater/pub_updater.dart";
+import "package:selectcode/src/commands/commands.dart";
+import "package:selectcode/src/version.dart";
 
-const executableName = 'selectcode';
-const packageName = 'selectcode';
-const description = 'A tool that combines all tools for SelectCode GmbH.';
+const executableName = "selectcode";
+const packageName = "selectcode";
+const description = "A tool that combines all tools for SelectCode GmbH.";
 
 /// {@template selectcode_command_runner}
 /// A [CommandRunner] for the CLI.
@@ -34,14 +34,14 @@ class SelectcodeCommandRunner extends CommandRunner<int> {
     // Add root options and flags
     argParser
       ..addFlag(
-        'version',
-        abbr: 'v',
+        "version",
+        abbr: "v",
         negatable: false,
-        help: 'Print the current version.',
+        help: "Print the current version.",
       )
       ..addFlag(
-        'verbose',
-        help: 'Noisy logging, including all shell commands executed.',
+        "verbose",
+        help: "Noisy logging, including all shell commands executed.",
       );
 
     // Add sub commands
@@ -58,7 +58,7 @@ class SelectcodeCommandRunner extends CommandRunner<int> {
   Future<int> run(Iterable<String> args) async {
     try {
       final topLevelResults = parse(args);
-      if (topLevelResults['verbose'] == true) {
+      if (topLevelResults["verbose"] == true) {
         _logger.level = Level.verbose;
       }
       return await runCommand(topLevelResults) ?? ExitCode.success.code;
@@ -67,8 +67,8 @@ class SelectcodeCommandRunner extends CommandRunner<int> {
       // exit with an error code
       _logger
         ..err(e.message)
-        ..err('$stackTrace')
-        ..info('')
+        ..err("$stackTrace")
+        ..info("")
         ..info(usage);
       return ExitCode.usage.code;
     } on UsageException catch (e) {
@@ -76,7 +76,7 @@ class SelectcodeCommandRunner extends CommandRunner<int> {
       // exit with an error code
       _logger
         ..err(e.message)
-        ..info('')
+        ..info("")
         ..info(e.usage);
       return ExitCode.usage.code;
     }
@@ -85,27 +85,27 @@ class SelectcodeCommandRunner extends CommandRunner<int> {
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
     _logger
-      ..detail('Argument information:')
-      ..detail('  Top level options:');
+      ..detail("Argument information:")
+      ..detail("  Top level options:");
     for (final option in topLevelResults.options) {
       if (topLevelResults.wasParsed(option)) {
-        _logger.detail('  - $option: ${topLevelResults[option]}');
+        _logger.detail("  - $option: ${topLevelResults[option]}");
       }
     }
     if (topLevelResults.command != null) {
       final commandResult = topLevelResults.command!;
       _logger
-        ..detail('  Command: ${commandResult.name}')
-        ..detail('    Command options:');
+        ..detail("  Command: ${commandResult.name}")
+        ..detail("    Command options:");
       for (final option in commandResult.options) {
         if (commandResult.wasParsed(option)) {
-          _logger.detail('    - $option: ${commandResult[option]}');
+          _logger.detail("    - $option: ${commandResult[option]}");
         }
       }
     }
 
     final int? exitCode;
-    if (topLevelResults['version'] == true) {
+    if (topLevelResults["version"] == true) {
       _logger.info(packageVersion);
       exitCode = ExitCode.success.code;
     } else {
@@ -124,7 +124,7 @@ class SelectcodeCommandRunner extends CommandRunner<int> {
       final isUpToDate = packageVersion == latestVersion;
       if (!isUpToDate) {
         _logger
-          ..info('')
+          ..info("")
           ..info(
             '''
 ${lightYellow.wrap('Update available!')} ${lightCyan.wrap(packageVersion)} \u2192 ${lightCyan.wrap(latestVersion)}

@@ -1,11 +1,11 @@
 import "dart:async";
 
 import "package:mason/mason.dart";
+import "package:selectcode/src/cli/git_exceptions.dart";
 import "package:selectcode/src/result_extension.dart";
 import "package:universal_io/io.dart";
 
-part 'git_cli.dart';
-
+part "git_cli.dart";
 part "rebase_cli.dart";
 
 abstract class _Cli {
