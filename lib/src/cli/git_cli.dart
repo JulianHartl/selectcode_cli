@@ -107,6 +107,25 @@ abstract class GitCli {
     );
   }
 
+  static Future<void> push({
+    required Logger logger,
+    bool force = false,
+  }) async {
+    return _runWithProgress(
+      (progress) async {
+        await _runCommand(
+          [
+            "push",
+            if (force) "--force",
+          ],
+          logger: logger,
+        );
+      },
+      logger: logger,
+      message: "Pushing changes",
+    );
+  }
+
   static Future<void> continueRebase({
     required Logger logger,
   }) async {

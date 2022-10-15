@@ -128,7 +128,6 @@ abstract class RebaseCli {
             await GitCli.abortMerge(logger: logger);
           },
           onContinue: () async {
-            logger.prompt('want to commit?');
             await GitCli.commit(
               message: "Hidden orphaned commit to save merge result.",
               logger: logger,
@@ -194,7 +193,22 @@ abstract class RebaseCli {
           "You don't need an additional commit. Project state is correct.",
         );
       }
-      logger.success("Done");
+      logger.success("Finished rebase.");
+      const doItAutomatically = "Do it automatically";
+      const doItManually = "I'll do it manually";
+
+      final choice = logger.chooseOne(
+        "The rebase changed the historical start point of the current branch. To prevent errors you should do a git push --force.",
+        choices: [
+          doItAutomatically,
+          doItManually,
+        ],
+        defaultValue: doItAutomatically,
+      );
+      if (choice == doItAutomatically) {
+        await GitCli.push(force: true, logger: logger);
+        logger.success("Updated origin/$currentBranch");
+      }
     } catch (e) {
       if (currentBranch != null && needsAbort) {
         try {
