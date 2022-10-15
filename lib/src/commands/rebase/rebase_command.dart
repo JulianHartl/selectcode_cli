@@ -26,7 +26,7 @@ class RebaseCommand extends Command<int> {
       usageException("Missing branch.");
     }
     await RebaseCli.runRebaseScript(
-      branch: branch,
+      baseBranch: branch,
       logger: _logger,
     );
     return ExitCode.success.code;

@@ -72,14 +72,14 @@ abstract class RebaseCli {
   }
 
   static Future<void> runRebaseScript({
-    required String branch,
+    required String baseBranch,
     required Logger logger,
   }) async {
     logger.info("This script will perform rebase via merge.");
     String? currentBranch;
     try {
       currentBranch = await GitCli.getCurrentBranch(logger: logger);
-      final baseBranchHash = await GitCli.getHash(branch, logger: logger);
+      final baseBranchHash = await GitCli.getHash(baseBranch, logger: logger);
       final currentBranchHash = await GitCli.getHash(
         currentBranch,
         logger: logger,
@@ -90,9 +90,9 @@ abstract class RebaseCli {
         logger: logger,
         hash: currentBranchHash,
       );
-      logger.info("Base branch: $branch ($baseBranchHash)");
+      logger.info("Base branch: $baseBranch ($baseBranchHash)");
       await GitCli.printCommits(
-        branch: branch,
+        branch: baseBranch,
         logger: logger,
         hash: baseBranchHash,
       );
@@ -104,7 +104,7 @@ abstract class RebaseCli {
         throw CurrentBranchEqualToBaseException();
       }
       final notReachableCommits = await GitCli.getNotReachableCommits(
-        baseBranch: branch,
+        baseBranch: baseBranch,
         branch: currentBranch,
         logger: logger,
       );
@@ -113,7 +113,7 @@ abstract class RebaseCli {
       }
       final uniqueCommits = await GitCli.getNotReachableCommits(
         baseBranch: currentBranch,
-        branch: branch,
+        branch: baseBranch,
         logger: logger,
       );
       if (uniqueCommits.isEmpty) {
@@ -125,7 +125,7 @@ abstract class RebaseCli {
         quiet: true,
       );
       await GitCli.merge(
-        branch: branch,
+        branch: baseBranch,
         message: "Hidden orphaned commit to save merge result.",
         logger: logger,
       );
@@ -152,7 +152,7 @@ abstract class RebaseCli {
         quiet: true,
       );
       await GitCli.rebase(
-        branch: branch,
+        branch: baseBranch,
         logger: logger,
       );
       if (await GitCli.areRebaseConflictsPresent(logger: logger)) {
@@ -176,7 +176,7 @@ abstract class RebaseCli {
           "Restoring project state from the hidden merge with single additional commit.",
         );
         final additionalCommitMessage =
-            "Rebase via merge. '$currentBranch' rebased on '$branch'.";
+            "Rebase via merge. '$currentBranch' rebased on '$baseBranch'.";
         final additionalCommitHash = await GitCli.getCommitTree(
           branch: hiddenResultHash,
           logger: logger,
