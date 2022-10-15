@@ -1,11 +1,11 @@
 import "dart:async";
 
 import "package:mason/mason.dart";
-import 'package:path/path.dart' as p;
 import "package:selectcode/src/result_extension.dart";
 import "package:universal_io/io.dart";
 
 part 'git_cli.dart';
+
 part "rebase_cli.dart";
 
 abstract class _Cli {
@@ -27,7 +27,7 @@ abstract class _Cli {
     required Logger logger,
   }) async {
     const runProcess = Process.run;
-    logger.info("Running: $cmd with $args");
+    logger.detail("Running: $cmd with $args");
     final result = await runProcess(
       cmd,
       args,
@@ -36,8 +36,8 @@ abstract class _Cli {
     );
 
     logger
-      ..info("stdout:\n${result.stdout}")
-      ..info("stderr:\n${result.stderr}");
+      ..detail("stdout:\n${result.stdout}")
+      ..detail("stderr:\n${result.stderr}");
     if (!result.isSuccess || result.stderr.toString().isNotEmpty) {
       if (throwError) {
         throw ProcessException(
