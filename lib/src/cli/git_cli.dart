@@ -208,7 +208,6 @@ abstract class GitCli {
         final wdPath = await getWorkingDirectory(logger: logger);
         final mergeHeadDir = "$wdPath/.git/MERGE_HEAD";
         final dir = Directory(mergeHeadDir);
-        logger.info("merge dir: $mergeHeadDir");
         final exists = await dir.exists();
         progress.update("Checking for merge conflicts (${exists ? "At least one" : "None found"})");
 
