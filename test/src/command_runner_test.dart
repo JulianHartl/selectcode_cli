@@ -5,13 +5,13 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import "package:args/command_runner.dart";
-import "package:mason_logger/mason_logger.dart";
-import "package:mocktail/mocktail.dart";
-import "package:pub_updater/pub_updater.dart";
-import "package:selectcode/src/command_runner.dart";
-import "package:selectcode/src/version.dart";
-import "package:test/test.dart";
+import 'package:args/command_runner.dart';
+import 'package:mason_logger/mason_logger.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:pub_updater/pub_updater.dart';
+import 'package:selectcli/src/command_runner.dart';
+import 'package:selectcli/src/version.dart';
+import 'package:test/test.dart';
 
 class MockLogger extends Mock implements Logger {}
 
@@ -24,10 +24,10 @@ ${lightYellow.wrap('Update available!')} ${lightCyan.wrap(packageVersion)} \u219
 Run ${lightCyan.wrap('$executableName update')} to update''';
 
 void main() {
-  group("SelectcodeCommandRunner", () {
+  group('selectcliCommandRunner', () {
     late PubUpdater pubUpdater;
     late Logger logger;
-    late SelectcodeCommandRunner commandRunner;
+    late SelectCliCommandRunner commandRunner;
 
     setUp(() {
       pubUpdater = MockPubUpdater();
@@ -38,7 +38,7 @@ void main() {
 
       logger = MockLogger();
 
-      commandRunner = SelectcodeCommandRunner(
+      commandRunner = SelectCliCommandRunner(
         logger: logger,
         pubUpdater: pubUpdater,
       );
@@ -56,7 +56,7 @@ void main() {
 
     test("can be instantiated without an explicit analytics/logger instance",
         () {
-      final commandRunner = SelectcodeCommandRunner();
+      final commandRunner = SelectCliCommandRunner();
       expect(commandRunner, isNotNull);
     });
 

@@ -1,4 +1,4 @@
-import "package:selectcode/src/commands/create/templates/flutter/flutter_template.dart";
+import 'package:selectcli/src/commands/create/templates/flutter/flutter_template.dart';
 
 import "package:selectcode/src/commands/create/templates/template.dart";
 

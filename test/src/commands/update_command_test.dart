@@ -7,13 +7,13 @@
 
 import "dart:io";
 
-import "package:mason_logger/mason_logger.dart";
-import "package:mocktail/mocktail.dart";
-import "package:pub_updater/pub_updater.dart";
-import "package:selectcode/src/command_runner.dart";
-import "package:selectcode/src/commands/commands.dart";
-import "package:selectcode/src/version.dart";
-import "package:test/test.dart";
+import 'package:mason_logger/mason_logger.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:pub_updater/pub_updater.dart';
+import 'package:selectcli/src/command_runner.dart';
+import 'package:selectcli/src/commands/commands.dart';
+import 'package:selectcli/src/version.dart';
+import 'package:test/test.dart';
 
 class FakeProcessResult extends Fake implements ProcessResult {}
 
@@ -29,14 +29,14 @@ void main() {
   group("update", () {
     late PubUpdater pubUpdater;
     late Logger logger;
-    late SelectcodeCommandRunner commandRunner;
+    late SelectCliCommandRunner commandRunner;
 
     setUp(() {
       final progress = MockProgress();
       final progressLogs = <String>[];
       pubUpdater = MockPubUpdater();
       logger = MockLogger();
-      commandRunner = SelectcodeCommandRunner(
+      commandRunner = SelectCliCommandRunner(
         logger: logger,
         pubUpdater: pubUpdater,
       );

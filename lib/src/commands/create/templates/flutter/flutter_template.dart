@@ -1,7 +1,7 @@
 import "dart:io";
 
-import "package:mason/mason.dart";
-import "package:selectcode/src/commands/create/templates/flutter/flutter_brick_bundle.dart";
+import 'package:mason/mason.dart';
+import 'package:selectcli/src/commands/create/templates/flutter/flutter_brick_bundle.dart';
 
 import "package:selectcode/src/commands/create/templates/template.dart";
 class FlutterTemplate extends Template {

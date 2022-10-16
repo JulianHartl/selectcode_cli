@@ -51,7 +51,7 @@ final flutterBrickBundle = MasonBundle.fromJson(<String, dynamic>{
     },
     {
       "path":
-          "{{project_name.snakeCase()}}/android/app/src/main/kotlin/de/selectcode/my_app/MainActivity.kt",
+          "{{project_name.snakeCase()}}/android/app/src/main/kotlin/de/selectcli/my_app/MainActivity.kt",
       "data":
           "cGFja2FnZSBkZS5zZWxlY3Rjb2RlLnt7cHJvamVjdF9uYW1lLnNuYWtlQ2FzZSgpfX0KCmltcG9ydCBpby5mbHV0dGVyLmVtYmVkZGluZy5hbmRyb2lkLkZsdXR0ZXJBY3Rpdml0eQoKY2xhc3MgTWFpbkFjdGl2aXR5OiBGbHV0dGVyQWN0aXZpdHkoKSB7Cn0K",
       "type": "text"

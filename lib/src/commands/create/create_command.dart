@@ -1,6 +1,7 @@
 import "package:args/command_runner.dart";
 import "package:mason/mason.dart";
-import "package:selectcode/src/commands/create/application.dart";
+import "package:mason_logger/mason_logger.dart";
+import "package:selectcli/src/commands/create/application.dart";
 import "package:universal_io/io.dart";
 
 class CreateCommand extends Command<int> {
@@ -8,7 +9,7 @@ class CreateCommand extends Command<int> {
 
   @override
   String get description =>
-      "Create a new flutter application in selectcode style.";
+      "Create a new flutter application in selectcli style.";
 
   @override
   String get name => "create";

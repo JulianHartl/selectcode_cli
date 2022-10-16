@@ -5,27 +5,29 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import "package:args/args.dart";
-import "package:args/command_runner.dart";
-import "package:mason_logger/mason_logger.dart";
-import "package:pub_updater/pub_updater.dart";
-import "package:selectcode/src/commands/commands.dart";
-import "package:selectcode/src/version.dart";
+import 'package:args/args.dart';
+import 'package:args/command_runner.dart';
+import 'package:mason_logger/mason_logger.dart';
+import 'package:pub_updater/pub_updater.dart';
+import 'package:selectcli/src/commands/commands.dart';
+import 'package:selectcli/src/commands/run/run_command.dart';
+import 'package:selectcli/src/services/storage_service.dart';
+import 'package:selectcli/src/version.dart';
 
-const executableName = "selectcode";
-const packageName = "selectcode";
-const description = "A tool that combines all tools for SelectCode GmbH.";
+const executableName = 'selectcli';
+const packageName = 'selectcli';
+const description = 'A tool that combines all tools for selectcli GmbH.';
 
-/// {@template selectcode_command_runner}
+/// {@template selectcli_command_runner}
 /// A [CommandRunner] for the CLI.
 ///
 /// ```
-/// $ selectcode --version
+/// $ selectcli --version
 /// ```
 /// {@endtemplate}
-class SelectcodeCommandRunner extends CommandRunner<int> {
-  /// {@macro selectcode_command_runner}
-  SelectcodeCommandRunner({
+class SelectCliCommandRunner extends CommandRunner<int> {
+  /// {@macro selectcli_command_runner}
+  SelectCliCommandRunner({
     Logger? logger,
     PubUpdater? pubUpdater,
   })  : _logger = logger ?? Logger(),
@@ -44,19 +46,25 @@ class SelectcodeCommandRunner extends CommandRunner<int> {
         help: "Noisy logging, including all shell commands executed.",
       );
 
+
     // Add sub commands
     addCommand(SampleCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
     addCommand(CreateCommand(logger: _logger));
     addCommand(RebaseCommand(logger: _logger));
+    addCommand(rCommand);
   }
 
   final Logger _logger;
   final PubUpdater _pubUpdater;
+  late final rCommand = RunCommand(logger: _logger);
+
 
   @override
   Future<int> run(Iterable<String> args) async {
     try {
+      await StorageService.readConfig();
+      await rCommand.init();
       final topLevelResults = parse(args);
       if (topLevelResults["verbose"] == true) {
         _logger.level = Level.verbose;

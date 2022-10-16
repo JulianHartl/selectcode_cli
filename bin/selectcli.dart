@@ -7,10 +7,10 @@
 
 import "dart:io";
 
-import "package:selectcode/src/command_runner.dart";
+import 'package:selectcli/src/command_runner.dart';
 
 Future<void> main(List<String> args) async {
-  await _flushThenExit(await SelectcodeCommandRunner().run(args));
+  await _flushThenExit(await SelectCliCommandRunner().run(args));
 }
 
 /// Flushes the stdout and stderr streams, then exits the program with the given
