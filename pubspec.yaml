@@ -1,5 +1,5 @@
-name: selectcode
-description: A Very Good Project created by Very Good CLI.
+name: selectcli
+description: A command line tool that combines all tools for SelectCode GmbH
 version: 0.0.1
 publish_to: none
 
@@ -8,18 +8,22 @@ environment:
 
 dependencies:
   args: ^2.3.1
+  json2yaml: ^3.0.0
+  json_annotation: ^4.7.0
   mason: ^0.1.0-dev.34
   mason_logger: ^0.2.0
   pub_updater: ^0.2.1
   universal_io: ^2.0.4
+  yaml: ^3.1.1
 
 dev_dependencies:
   build_runner: ^2.0.0
   build_verify: ^3.0.0
   build_version: ^2.0.0
+  json_serializable: ^6.5.1
   mocktail: ^0.3.0
   test: ^1.19.2
   very_good_analysis: ^3.1.0
 
 executables:
-  selectcode:
+  selectcli:

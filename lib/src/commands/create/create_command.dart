@@ -1,6 +1,6 @@
 import "package:args/command_runner.dart";
 import "package:mason/mason.dart";
-import "package:selectcode/src/commands/create/application.dart";
+import "package:selectcli/src/commands/create/application.dart";
 import "package:universal_io/io.dart";
 
 class CreateCommand extends Command<int> {
@@ -8,7 +8,7 @@ class CreateCommand extends Command<int> {
 
   @override
   String get description =>
-      "Create a new flutter application in selectcode style.";
+      "Create a new flutter application in selectcli style.";
 
   @override
   String get name => "create";
@@ -28,11 +28,13 @@ class CreateCommand extends Command<int> {
     final generator =
         await MasonGenerator.fromBundle(application.template.bundle);
     final outputDir = Directory(".");
-    await generator.generate(DirectoryGeneratorTarget(outputDir),
-        vars: {
-          "project_name": name,
-        },
-        logger: _logger,);
+    await generator.generate(
+      DirectoryGeneratorTarget(outputDir),
+      vars: {
+        "project_name": name,
+      },
+      logger: _logger,
+    );
     await Process.run(
       "flutter",
       ["pub", "get"],

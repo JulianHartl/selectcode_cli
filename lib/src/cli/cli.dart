@@ -1,23 +1,47 @@
 import "dart:async";
+import "dart:convert" show utf8;
 
 import "package:mason/mason.dart";
-import "package:selectcode/src/cli/git_exceptions.dart";
-import "package:selectcode/src/result_extension.dart";
+import "package:selectcli/src/result_extension.dart";
 import "package:universal_io/io.dart";
+
+import 'git_exceptions.dart';
 
 part "git_cli.dart";
 part "rebase_cli.dart";
+part "run_cli.dart";
 
 abstract class _Cli {
-  // static Future<ProcessResult> runInteractive() async {
-  //   final progress = await Process.start(executable, arguments);
-  //   return ProcessResult(
-  //     pid,
-  //     exitCode,
-  //     stdout,
-  //     stderr,
-  //   );
-  // }
+  static Future<ProcessResult> runStream(
+    String cmd,
+    List<String> args, {
+    required Logger logger,
+    required void Function(String error) onErr,
+    required void Function(String content) onSysOut,
+  }) async {
+    final progress = await Process.start(
+      cmd,
+      args,
+      runInShell: true,
+    );
+
+    progress.stderr.transform(utf8.decoder).listen((event) {
+      onErr(event);
+    });
+
+    progress.stdout.transform(utf8.decoder).listen((event) {
+      onSysOut(event);
+    });
+
+    final exitCode = await progress.exitCode;
+
+    return ProcessResult(
+      pid,
+      exitCode,
+      stdout,
+      stderr,
+    );
+  }
 
   static Future<ProcessResult> run(
     String cmd,
@@ -36,9 +60,9 @@ abstract class _Cli {
     );
 
     logger
-      ..info("stdout:\n${result.stdout}")
-      ..info("stderr:\n${result.stderr}");
-    if (!result.isSuccess || result.stderr.toString().isNotEmpty) {
+      ..detail("stdout:\n${result.stdout}")
+      ..detail("stderr:\n${result.stderr}");
+    if (!result.isSuccess) {
       if (throwError) {
         throw ProcessException(
           cmd,
