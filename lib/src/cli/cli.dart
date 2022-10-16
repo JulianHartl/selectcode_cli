@@ -64,7 +64,7 @@ abstract class _Cli {
 
     logger
       ..detail("stdout:\n${result.stdout}")
-      ..info("stderr:\n${result.stderr}");
+      ..detail("stderr:\n${result.stderr}");
     if (!result.isSuccess) {
       if (throwError) {
         throw ProcessException(
