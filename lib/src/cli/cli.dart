@@ -2,7 +2,6 @@ import "dart:async";
 import "dart:convert" show utf8;
 
 import "package:mason/mason.dart";
-import "package:path/path.dart" as p;
 import "package:selectcli/src/result_extension.dart";
 import "package:universal_io/io.dart";
 
