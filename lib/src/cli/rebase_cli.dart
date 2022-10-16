@@ -32,7 +32,7 @@ abstract class RebaseCli {
   // Run `curl -L https://git.io/rebase-via-merge -o ./git-rebase-via-merge.sh`.
   static Future<void> _fetchRebaseScript({required Logger logger}) async {
     await _runWithProgress(
-          (progress) => _Cli.run(
+      (progress) => _Cli.run(
         "curl",
         ["-L", "https://git.io/rebase-via-merge", "-o", "./$_rebaseScriptName"],
         logger: logger,
@@ -44,7 +44,7 @@ abstract class RebaseCli {
 
   static Future<void> _deleteRebaseScript({required Logger logger}) async {
     await _runWithProgress(
-          (progress) => _Cli.run(
+      (progress) => _Cli.run(
         "rm",
         [
           "./$_rebaseScriptName",
@@ -61,7 +61,7 @@ abstract class RebaseCli {
     required String branch,
   }) async {
     await _runWithProgress(
-          (progress) => _Cli.run(
+      (progress) => _Cli.run(
         "/bin/bash",
         ["./$_rebaseScriptName", branch],
         logger: logger,
@@ -170,7 +170,7 @@ abstract class RebaseCli {
       }
       final currentTree = await GitCli.getTree(parent: "HEAD", logger: logger);
       final resultTree =
-      await GitCli.getTree(parent: hiddenResultHash, logger: logger);
+          await GitCli.getTree(parent: hiddenResultHash, logger: logger);
       if (currentTree != resultTree) {
         logger.info(
           "Restoring project state from the hidden merge with single additional commit.",
@@ -249,7 +249,7 @@ abstract class RebaseCli {
       logger: logger,
     );
     final filesWithConflictMarkers =
-    await GitCli.getFilesWithConflictMarkers(logger: logger);
+        await GitCli.getFilesWithConflictMarkers(logger: logger);
     logger
       ..info("You have at least one $name conflict.")
       ..info(
@@ -276,7 +276,8 @@ abstract class RebaseCli {
         unstagedFiles = await GitCli.getUnstagedFiles(logger: logger);
         if (unstagedFiles.isNotEmpty) {
           logger.info(
-              "There are still unstaged files:\n${unstagedFiles.join("\n")}",);
+            "There are still unstaged files:\n${unstagedFiles.join("\n")}",
+          );
         } else {
           await onContinue();
         }

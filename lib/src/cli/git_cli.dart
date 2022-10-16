@@ -1,7 +1,5 @@
 part of "cli.dart";
 
-
-
 abstract class GitCli {
   static Future<ProcessResult> _runCommand(
     List<String> args, {
@@ -186,7 +184,8 @@ abstract class GitCli {
         final mergeHead = File.fromUri(Uri.parse(mergeHeadPath));
         final exists = await mergeHead.exists();
         progress.update(
-            "Checking for merge conflicts (${exists ? "At least one" : "None found"})",);
+          "Checking for merge conflicts (${exists ? "At least one" : "None found"})",
+        );
 
         return exists;
       },

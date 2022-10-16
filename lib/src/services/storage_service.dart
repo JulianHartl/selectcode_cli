@@ -15,7 +15,8 @@ class StorageService {
 
   static Future<File> _getConfigFile() async {
     final file = File(
-        "${Platform.environment["HOME"]}/$storageFolderName/$configFileName",);
+      "${Platform.environment["HOME"]}/$storageFolderName/$configFileName",
+    );
     if (!(await file.exists())) {
       await file.create(recursive: true);
       await writeConfig(Config.initial());

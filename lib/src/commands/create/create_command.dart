@@ -28,11 +28,13 @@ class CreateCommand extends Command<int> {
     final generator =
         await MasonGenerator.fromBundle(application.template.bundle);
     final outputDir = Directory(".");
-    await generator.generate(DirectoryGeneratorTarget(outputDir),
-        vars: {
-          "project_name": name,
-        },
-        logger: _logger,);
+    await generator.generate(
+      DirectoryGeneratorTarget(outputDir),
+      vars: {
+        "project_name": name,
+      },
+      logger: _logger,
+    );
     await Process.run(
       "flutter",
       ["pub", "get"],

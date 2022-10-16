@@ -46,7 +46,6 @@ class SelectCliCommandRunner extends CommandRunner<int> {
         help: "Noisy logging, including all shell commands executed.",
       );
 
-
     // Add sub commands
     addCommand(SampleCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
@@ -58,7 +57,6 @@ class SelectCliCommandRunner extends CommandRunner<int> {
   final Logger _logger;
   final PubUpdater _pubUpdater;
   late final rCommand = RunCommand(logger: _logger);
-
 
   @override
   Future<int> run(Iterable<String> args) async {

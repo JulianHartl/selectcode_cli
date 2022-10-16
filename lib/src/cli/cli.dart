@@ -5,6 +5,8 @@ import "package:mason/mason.dart";
 import "package:selectcli/src/result_extension.dart";
 import "package:universal_io/io.dart";
 
+import 'git_exceptions.dart';
+
 part "git_cli.dart";
 part "rebase_cli.dart";
 part "run_cli.dart";

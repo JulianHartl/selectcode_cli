@@ -1,6 +1,5 @@
 import "package:args/command_runner.dart";
 import "package:mason/mason.dart";
-
 import "package:selectcli/src/cli/cli.dart";
 
 class RebaseCommand extends Command<int> {

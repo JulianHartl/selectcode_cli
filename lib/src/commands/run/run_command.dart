@@ -44,6 +44,7 @@ class RunCommand extends Command<int> {
     }
 
     usageException(
-        "${argResults!.arguments[0]} is not registered in ${StorageService.configFileName}.",);
+      "${argResults!.arguments[0]} is not registered in ${StorageService.configFileName}.",
+    );
   }
 }
