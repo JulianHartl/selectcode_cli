@@ -1,18 +1,14 @@
 import "dart:async";
-import 'dart:convert' show utf8;
-import 'dart:math';
+import "dart:convert" show utf8;
 
-import 'package:args/args.dart';
 import "package:mason/mason.dart";
-import 'package:path/path.dart' as p;
+import "package:path/path.dart" as p;
 import "package:selectcli/src/result_extension.dart";
 import "package:universal_io/io.dart";
 
-part 'git_cli.dart';
-
+part "git_cli.dart";
 part "rebase_cli.dart";
-
-part 'run_cli.dart';
+part "run_cli.dart";
 
 abstract class _Cli {
   static Future<ProcessResult> runStream(

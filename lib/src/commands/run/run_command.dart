@@ -1,9 +1,9 @@
-import 'dart:async';
+import "dart:async";
 
-import 'package:args/command_runner.dart';
-import 'package:mason/mason.dart';
-import 'package:selectcli/src/commands/run/run_sub_command.dart';
-import 'package:selectcli/src/services/storage_service.dart';
+import "package:args/command_runner.dart";
+import "package:mason/mason.dart";
+import "package:selectcli/src/commands/run/run_sub_command.dart";
+import "package:selectcli/src/services/storage_service.dart";
 
 class UnknownCommandException implements Exception {
   UnknownCommandException(this.command);
@@ -44,6 +44,6 @@ class RunCommand extends Command<int> {
     }
 
     usageException(
-        "${argResults!.arguments[0]} is not registered in ${StorageService.configFileName}.");
+        "${argResults!.arguments[0]} is not registered in ${StorageService.configFileName}.",);
   }
 }

@@ -1,8 +1,7 @@
-import 'package:json2yaml/json2yaml.dart';
-import 'package:universal_io/io.dart';
-import 'package:yaml/yaml.dart';
-
-import 'config.dart';
+import "package:json2yaml/json2yaml.dart";
+import "package:selectcli/src/services/config.dart";
+import "package:universal_io/io.dart";
+import "package:yaml/yaml.dart";
 
 class IllegalConfigFormatException implements Exception {
   String get message => "Config file has illegal format.";
@@ -16,7 +15,7 @@ class StorageService {
 
   static Future<File> _getConfigFile() async {
     final file = File(
-        "${Platform.environment["HOME"]}/$storageFolderName/$configFileName");
+        "${Platform.environment["HOME"]}/$storageFolderName/$configFileName",);
     if (!(await file.exists())) {
       await file.create(recursive: true);
       await writeConfig(Config.initial());

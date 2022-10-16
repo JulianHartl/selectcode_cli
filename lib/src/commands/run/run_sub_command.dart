@@ -1,8 +1,7 @@
-import 'package:args/command_runner.dart';
-import 'package:mason/mason.dart';
-import 'package:selectcli/src/services/command.dart';
-
-import '../../cli/cli.dart';
+import "package:args/command_runner.dart";
+import "package:mason/mason.dart";
+import "package:selectcli/src/cli/cli.dart";
+import "package:selectcli/src/services/command.dart";
 
 class RunSubCommand extends Command<int> {
   RunSubCommand(

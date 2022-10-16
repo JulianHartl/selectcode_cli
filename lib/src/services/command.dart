@@ -1,6 +1,6 @@
-import 'package:json_annotation/json_annotation.dart';
+import "package:json_annotation/json_annotation.dart";
 
-part 'command.g.dart';
+part "command.g.dart";
 
 @JsonSerializable()
 class ConfigCommand {

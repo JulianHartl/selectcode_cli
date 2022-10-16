@@ -1,6 +1,5 @@
 import "package:args/command_runner.dart";
 import "package:mason/mason.dart";
-import "package:mason_logger/mason_logger.dart";
 import "package:selectcli/src/commands/create/application.dart";
 import "package:universal_io/io.dart";
 

@@ -5,18 +5,18 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:args/args.dart';
-import 'package:args/command_runner.dart';
-import 'package:mason_logger/mason_logger.dart';
-import 'package:pub_updater/pub_updater.dart';
-import 'package:selectcli/src/commands/commands.dart';
-import 'package:selectcli/src/commands/run/run_command.dart';
-import 'package:selectcli/src/services/storage_service.dart';
-import 'package:selectcli/src/version.dart';
+import "package:args/args.dart";
+import "package:args/command_runner.dart";
+import "package:mason_logger/mason_logger.dart";
+import "package:pub_updater/pub_updater.dart";
+import "package:selectcli/src/commands/commands.dart";
+import "package:selectcli/src/commands/run/run_command.dart";
+import "package:selectcli/src/services/storage_service.dart";
+import "package:selectcli/src/version.dart";
 
-const executableName = 'selectcli';
-const packageName = 'selectcli';
-const description = 'A tool that combines all tools for selectcli GmbH.';
+const executableName = "selectcli";
+const packageName = "selectcli";
+const description = "A tool that combines all tools for selectcli GmbH.";
 
 /// {@template selectcli_command_runner}
 /// A [CommandRunner] for the CLI.

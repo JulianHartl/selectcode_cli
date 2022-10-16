@@ -5,12 +5,12 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:mason_logger/mason_logger.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:pub_updater/pub_updater.dart';
-import 'package:selectcli/src/command_runner.dart';
-import 'package:selectcli/src/version.dart';
-import 'package:test/test.dart';
+import "package:mason_logger/mason_logger.dart";
+import "package:mocktail/mocktail.dart";
+import "package:pub_updater/pub_updater.dart";
+import "package:selectcli/src/command_runner.dart";
+import "package:selectcli/src/version.dart";
+import "package:test/test.dart";
 
 class MockLogger extends Mock implements Logger {}
 

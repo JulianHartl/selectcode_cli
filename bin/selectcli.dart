@@ -7,7 +7,7 @@
 
 import "dart:io";
 
-import 'package:selectcli/src/command_runner.dart';
+import "package:selectcli/src/command_runner.dart";
 
 Future<void> main(List<String> args) async {
   await _flushThenExit(await SelectCliCommandRunner().run(args));

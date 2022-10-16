@@ -1,8 +1,8 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:selectcli/src/services/command.dart';
-import 'package:yaml/yaml.dart';
+import "package:json_annotation/json_annotation.dart";
+import "package:selectcli/src/services/command.dart";
+import "package:yaml/yaml.dart";
 
-part 'config.g.dart';
+part "config.g.dart";
 
 @JsonSerializable()
 class Config {
@@ -11,7 +11,7 @@ class Config {
   }) : _commands = commands ?? const [];
 
   factory Config.fromJson(Map<String, dynamic> json) => Config(
-        commands: (json['commands'] as List?)
+        commands: (json["commands"] as List?)
             ?.cast<YamlMap>()
             .map((e) {
               final json = Map<String, dynamic>.from(e.value);
