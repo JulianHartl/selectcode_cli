@@ -11,6 +11,7 @@ import "package:mason_logger/mason_logger.dart";
 import "package:pub_updater/pub_updater.dart";
 import "package:selectcli/src/commands/commands.dart";
 import "package:selectcli/src/commands/run/run_command.dart";
+import 'package:selectcli/src/commands/status/status_command.dart';
 import "package:selectcli/src/services/storage_service.dart";
 import "package:selectcli/src/version.dart";
 
@@ -52,6 +53,7 @@ class SelectCliCommandRunner extends CommandRunner<int> {
     addCommand(CreateCommand(logger: _logger));
     addCommand(RebaseCommand(logger: _logger));
     addCommand(rCommand);
+    addCommand(StatusCommand(logger: _logger));
   }
 
   final Logger _logger;
