@@ -1,8 +1,7 @@
 import "package:json_annotation/json_annotation.dart";
 import "package:selectcli/src/services/command.dart";
+import "package:selectcli/src/services/status_url.dart";
 import "package:yaml/yaml.dart";
-
-import 'status_url.dart';
 
 part "config.g.dart";
 

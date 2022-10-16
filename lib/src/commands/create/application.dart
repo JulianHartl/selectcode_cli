@@ -1,5 +1,5 @@
-import 'templates/flutter/flutter_template.dart';
-import 'templates/template.dart';
+import "package:selectcli/src/commands/create/templates/flutter/flutter_template.dart";
+import "package:selectcli/src/commands/create/templates/template.dart";
 
 abstract class Application {
   const Application({

@@ -1,7 +1,7 @@
-import 'package:ansicolor/ansicolor.dart';
-import 'package:args/command_runner.dart';
-import 'package:mason/mason.dart';
-import 'package:selectcli/src/commands/status/status_service.dart';
+import "package:ansicolor/ansicolor.dart";
+import "package:args/command_runner.dart";
+import "package:mason/mason.dart";
+import "package:selectcli/src/commands/status/status_service.dart";
 
 class StatusCommand extends Command<int> {
   StatusCommand({

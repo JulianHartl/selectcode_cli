@@ -1,7 +1,6 @@
-import 'package:http/http.dart' as http;
-import 'package:selectcli/src/services/storage_service.dart';
-
-import '../../services/status_url.dart';
+import "package:http/http.dart" as http;
+import "package:selectcli/src/services/status_url.dart";
+import "package:selectcli/src/services/storage_service.dart";
 
 abstract class StatusService {
   static Future<bool> check(String url) async {
