@@ -12,7 +12,7 @@ class StatusCommand extends Command<int> {
 
   @override
   String get description =>
-      "Checks the status of all services hosted by SelectCode";
+      "Checks the status of all services hosted by SelectCode.";
 
   @override
   String get name => "status";
@@ -24,20 +24,22 @@ class StatusCommand extends Command<int> {
     urls.sort(
       (a, b) => (a.project ?? a.name).compareTo(b.project ?? b.name),
     );
-    for (final statusUrl in urls) {
-      final url = statusUrl.url;
-      final prefix =
-          "${statusUrl.project != null ? "[${statusUrl.project}] " : ""}${statusUrl.name}";
-      final progress = _logger.progress("Checking status of $url...");
-      final success = await StatusService.check(url);
-      if (success) {
-        pen.green();
-        progress.complete("$prefix ${pen("online")}");
-      } else {
-        pen.red();
-        progress.fail("$prefix ${pen("not available")}");
-      }
-    }
+    await Future.wait<void>(
+      urls.map<Future<void>>((statusUrl) async {
+        final url = statusUrl.url;
+        final prefix =
+            "${statusUrl.project != null ? "[${statusUrl.project}] " : ""}${statusUrl.name}";
+        final progress = _logger.progress("Checking status of $url...");
+        final success = await StatusService.check(url);
+        if (success) {
+          pen.green();
+          progress.complete("$prefix ${pen("online")}");
+        } else {
+          pen.red();
+          progress.fail("$prefix ${pen("not available")}");
+        }
+      }),
+    );
     return ExitCode.success.code;
   }
 }

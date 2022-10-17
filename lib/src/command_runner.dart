@@ -46,7 +46,6 @@ class SelectCliCommandRunner extends CommandRunner<int> {
       );
 
     // Add sub commands
-    addCommand(SampleCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
     addCommand(CreateCommand(logger: _logger));
     addCommand(RebaseCommand(logger: _logger));
@@ -85,6 +84,9 @@ class SelectCliCommandRunner extends CommandRunner<int> {
         ..info("")
         ..info(e.usage);
       return ExitCode.usage.code;
+    } on Exception catch (e) {
+      _logger.err(e.toString());
+      return ExitCode.osError.code;
     }
   }
 

@@ -8,6 +8,5 @@
 export "create/create_command.dart";
 export "rebase/rebase_command.dart";
 export "run/run_command.dart";
-export "sample_command.dart";
 export "status/status_command.dart";
 export "update_command.dart";
