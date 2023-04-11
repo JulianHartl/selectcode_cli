@@ -14,7 +14,7 @@ dependencies:
   json_annotation: ^4.7.0
   mason: ^0.1.0-dev.34
   mason_logger: ^0.2.0
-  pub_updater: ^0.2.1
+  pub_updater: ^0.3.0
   universal_io: ^2.0.4
   yaml: ^3.1.1
 
